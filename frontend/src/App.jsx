@@ -295,6 +295,8 @@ function App() {
         {assessmentError && (
           <p role="alert">{assessmentError}</p>
     )}
+    </section>
+    )}
       
     {screen === 3 && (
       <section className="card">
