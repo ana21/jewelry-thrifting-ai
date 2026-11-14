@@ -6,6 +6,13 @@
 
 body {
   margin: 0;
+  background: #E4F9FA;
+  color: #102D4D;
+}
+
+h1,
+h2 {
+  color: #007780;
 }
 
 button,

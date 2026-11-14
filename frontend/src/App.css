@@ -18,7 +18,7 @@ header {
 }
 
 h1 {
-  color: #183c59;
+  color: #007780;
   font-family: Georgia, serif;
 }
 
@@ -38,7 +38,7 @@ h1 {
   padding: 0.85rem;
   border: 0;
   border-radius: 8px;
-  background: #397fa9;
+  background: #007780;
   color: white;
   font: inherit;
   font-weight: 700;
