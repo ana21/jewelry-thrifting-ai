@@ -64,10 +64,10 @@ function App() {
     jewelryType: 'Unknown',
     hallmark: '',
     brand: '',
-    magnet: 'Note tested',
+    magnet: 'Not tested',
     surface: 'Unsure',
     weight: 'Unsure',
-    temperature: 'Not tested',
+    temperature: 'Unknown',
     sound: 'Not tested',
     stones: 'Unsure',
     stoneDescription: '',
@@ -252,7 +252,7 @@ function App() {
           Back to photos
         </button>
 
-        <button className="next-button" type="button" disabled>
+        <button className="next-button" type="button" onClick={() => setScreen(3)}>
           Assess jewelry
         </button>
         <p className="note">The assessment screen is coming next.</p>
