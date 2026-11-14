@@ -92,3 +92,57 @@ h1 {
   font-size: 0.85rem;
   text-align: center;
 }
+
+.photo-thumbnail {
+  display: block;
+  width: 90px;
+  height: 90px;
+  margin: 0.5rem 0;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.question {
+  margin-top: 1.25rem;
+}
+
+.question label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.question .extra-label {
+  margin-top: 1rem;
+}
+
+.question input,
+.question select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.75rem;
+  border: 1px solid #a9c5d7;
+  border-radius: 8px;
+  background: white;
+  color: #102d4d;
+  font: inherit;
+}
+
+.question small {
+  display: block;
+  margin-top: 0.35rem;
+  color: #617b8d;
+}
+
+.back-button {
+  width: 100%;
+  margin-top: 1.5rem;
+  padding: 0.85rem;
+  border: 1px solid #007780;
+  border-radius: 8px;
+  background: white;
+  color: #007780;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}

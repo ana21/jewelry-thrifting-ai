@@ -1,9 +1,79 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 
+const questions = [
+  {
+    name: 'jewelryType',
+    label: "What type of jewelry is it?",
+    options: ['Bracelet', 'Ring', 'Necklace', 'Earrings', 'Brooch', 'Other', 'Unknown'],
+  },
+  {
+    name: 'magnet',
+    label: 'Does a magnet attract the jewelry?',
+    options: ['Strong attraction', 'No attraction', 'Not tested'],
+  },
+  {
+    name: 'surface',
+    label: 'What do you notice about the surface?',
+    options: ['Tarnish or patina', 'Other discoloration', 'None', 'Unsure'],
+  },
+  {
+    name: 'weight',
+    label: 'How does it feel in your hand?',
+    options: ['Average', 'Heavy', 'Light', 'Unsure'],
+  },
+  {
+    name: 'temperature',
+    label: 'How did it feel when you first touched it?',
+    options: ['Cool', 'Room temperature', 'Unknown'],
+  },
+  {
+    name: 'sound',
+    label: 'What sound did you notice when gently tapped?',
+    options: ['Ringing', 'Dull', 'Other', 'Not tested'],
+  },
+  {
+    name: 'stones',
+    label: 'Are stones present?',
+    options: ['Yes', 'No', 'Unsure']
+  },
+  {
+    name: 'condition',
+    label: 'What is the condition?',
+    options: ['Good', 'Damaged', 'Unsure'],
+  },
+]
+
+function PhotoThumbnail({ photo }) {
+  const [url, setUrl] = useState('')
+
+  useEffect(() => {
+    const objectUrl = URL.createObjectURL(photo)
+    setUrl(objectUrl)
+    return () => URL.revokeObjectURL(objectUrl)
+  }, [photo])
+
+  return url ? <img className="photo-thumbnail" src={url} alt={photo.name} /> : null
+}
+
 function App() {
+  const [screen, setScreen] = useState(1)
   const [photos, setPhotos] = useState([])
   const [askingPrice, setAskingPrice] = useState('')
+  const [answers, setAnswers] = useState({
+    jewelryType: 'Unknown',
+    hallmark: '',
+    brand: '',
+    magnet: 'Note tested',
+    surface: 'Unsure',
+    weight: 'Unsure',
+    temperature: 'Not tested',
+    sound: 'Not tested',
+    stones: 'Unsure',
+    stoneDescription: '',
+    stoneBack: 'Unsure',
+    condition: 'Unsure',
+  })
 
   function addPhotos(event) {
     const selected = Array.from(event.target.files)
@@ -15,6 +85,12 @@ function App() {
     setPhotos((current) => current.filter((_, i) => i !== index))
   }
 
+  function updateAnswer(name, value) {
+    setAnswers((current) => ({ ...current, [name]: value }))
+  }
+
+  const priceIsValid = askingPrice.trim() !== '' && Number.isFinite(Number(askingPrice)) && Number(askingPrice) >= 0
+  
   return (
     <main className="app">
       <header>
@@ -22,7 +98,8 @@ function App() {
         <h1>The Thrill of the Hunt</h1>
         <p>Discover the potential of your jewelry find.</p>
       </header>
-
+    
+    { screen === 1 && (
       <section className="card">
         <p className="step">STEP 1 OF 3</p>
         <h2>Photograph &amp; Asking Price</h2>
@@ -42,6 +119,7 @@ function App() {
           <ul className="photo-list">
             {photos.map((photo, index) => (
               <li key={`${photo.name}-${index}`}>
+                <PhotoThumbnail photo={photo} />
                 <span>{photo.name}</span>
                 <button type="button" onClick={() => removePhoto(index)}>
                   Remove
@@ -65,11 +143,121 @@ function App() {
           onChange={(event) => setAskingPrice(event.target.value)}
         />
 
-        <button className="next-button" type="button" disabled>
+        <button 
+          className="next-button" 
+          type="button" 
+          disabled={photos.length === 0 || !priceIsValid}
+          onClick={() => setScreen(2)}
+        >
           Continue
         </button>
-        <p className="note">The questions screen is coming next.</p>
+        <p className="note">Add at least one photo and an asking price.</p>
       </section>
+    )}
+
+    {screen === 2 && (
+      <section className="card">
+        <p className="step">STEP 2 OF 3</p>
+        <h2>Guided Jewelry Questions</h2>
+        <p>Choose what you observed. It's fine to leave an answer unsure.</p>
+
+        {questions.map((question) => (
+          <div className="question" key={question.name}>
+            <label htmlFor={question.name}>{question.label}</label>
+            <select
+              id={question.name}
+              value={answers[question.name]}
+              onChange={(event) =>
+                updateAnswer(question.name, event.target.value)
+              }
+            >
+              {question.options.map((option) => (
+                <option key={option} value={option}>{option}</option>
+              ))}
+            </select>
+
+            {question.name === 'jewelryType' && (
+              <>
+                <label className="extra-label" htmlFor="hallmark">
+                  Hallmark or marking
+                </label>
+                <input
+                  id="hallmark"
+                  type="text"
+                  placeholder="For example, 925 or 14K"
+                  value={answers.hallmark}
+                  onChange={(event) =>
+                    updateAnswer('hallmark', event.target.value)
+                  }
+                />
+                <small>Leave blank if unknown. A marking is a clue.</small>
+
+                <label className="extra-label" htmlFor="brand">
+                  Maker or brand (optional)
+                </label>
+                <input 
+                  id="brand"
+                    type="text"
+                    placeholder="Enter a name, if known"
+                    value={answers.brand}
+                    onChange={(event) =>
+                      updateAnswer('brand', event.target.value)
+                    }
+                  />
+              </>
+            )}
+
+            {question.name === 'stones' && answers.stones === 'Yes' && (
+              <>
+                <label className="extra-label" htmlFor="stoneBack">
+                  Can you see the back of the stone through the setting?
+                </label>
+                <select
+                  id="stoneBack"
+                  value={answers.stoneBack}
+                  onChange={(event) =>
+                    updateAnswer('stoneBack', event.target.value)
+                  }
+                >
+                  <option value="Unsure">Unsure</option>
+                  <option value="Yes, the back is visible">
+                    Yes, the back is visible
+                  </option>
+                  <option value="No, the setting covers the back">
+                    No, the setting covers the back
+                  </option>
+                </select>
+                <label className="extra-label" htmlFor="stoneDescription">
+                  Describe the stones (optional)
+                </label>
+                <input
+                  id="stoneDescription"
+                  type="text"
+                  placeholder="For example, small blue stones"
+                  value={answers.stoneDescription}
+                  onChange={(event) =>
+                      updateAnswer('stoneDescription', event.target.value)
+                  }
+                />
+              </>
+            )}
+          </div>
+        ))}
+
+        <button
+          className="back-button"
+          type="button"
+          onClick={() => setScreen(1)}
+        >
+          Back to photos
+        </button>
+
+        <button className="next-button" type="button" disabled>
+          Assess jewelry
+        </button>
+        <p className="note">The assessment screen is coming next.</p>
+      </section>
+    )}
     </main>
   )
 }
