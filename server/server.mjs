@@ -29,6 +29,7 @@ if (!process.env.GEMINI_API_KEY) {
 
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,
+  httpOptions: { apiVersion: 'v1beta' }
 })
 
 const assessmentSchema = {
@@ -144,16 +145,18 @@ Shopper's observations: ${JSON.stringify(observations)}`,
   ]
 
   try {
+    console.log('Sending request to Gemini...')
     const interaction = await ai.interactions.create({
       model: 'gemini-3.8-flash',
       input,
-      tools: [{ type: 'google_search' }],
+    //  tools: [{ type: 'google_search' }],
       response_format: {
         type: 'text',
         mime_type: 'application/json',
         schema: assessmentSchema,
       },
     })
+    console.log('Received response from Gemini...')
 
     const assessment = JSON.parse(interaction.output_text)
 
