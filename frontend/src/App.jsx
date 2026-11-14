@@ -58,6 +58,9 @@ function PhotoThumbnail({ photo }) {
 
 function App() {
   const [screen, setScreen] = useState(1)
+  const [assessment, setAssessment] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [assessmentError, setAssessmentError] = useState('')
   const [photos, setPhotos] = useState([])
   const [askingPrice, setAskingPrice] = useState('')
   const [answers, setAnswers] = useState({
@@ -89,6 +92,39 @@ function App() {
     setAnswers((current) => ({ ...current, [name]: value }))
   }
 
+  async function assessJewelry() {
+    setLoading(true)
+    setAssessmentError('')
+    setAssessment(null)
+  
+    const formData = new FormData()
+    photos.forEach((photo) => formData.append('photos', photo))
+    formData.append('askingPrice', askingPrice)
+    formData.append('answers', JSON.stringify(answers))
+  
+    try {
+      const response = await fetch('/api/assess', {
+        method: 'POST',
+        body: formData,
+      })
+  
+      const data = await response.json()
+  
+      if (!response.ok) {
+        throw new Error(data.error || 'Assessment failed. Please try again.')
+      }
+  
+      setAssessment(data.assessment)
+      setScreen(3)
+    } catch (error) {
+      setAssessmentError(
+        error.message || 'Could not connect to the assessment server.',
+      )
+    } finally {
+      setLoading(false)
+    }
+  }
+  
   const priceIsValid = askingPrice.trim() !== '' && Number.isFinite(Number(askingPrice)) && Number(askingPrice) >= 0
   
   return (
@@ -252,11 +288,12 @@ function App() {
           Back to photos
         </button>
 
-        <button className="next-button" type="button" onClick={() => setScreen(3)}>
-          Assess jewelry
+        <button className="next-button" type="button" onClick={assessJewelry} disabled={loading}>
+          {loading ? 'Assessing jewelry…' : 'Assess jewelry'}
         </button>
-        <p className="note">The assessment screen is coming next.</p>
-      </section>
+        
+        {assessmentError && (
+          <p role="alert">{assessmentError}</p>
     )}
       
     {screen === 3 && (
@@ -264,29 +301,48 @@ function App() {
         <p className="step">STEP 3 OF 3</p>
         <h2>Jewelry Assessment Results</h2>
     
-        <p>
-          Your answers are ready for assessment. Gemini will be connected
-          in the next development stage.
-        </p>
-    
         <div className="resale-estimate">
           <h3>Estimated resale range</h3>
           <p>Unavailable until market evidence is researched.</p>
           <p>Asking price: ${Number(askingPrice).toFixed(2)}</p>
         </div>
-    
+
         <h3>Possible identification</h3>
-        <p>Assessment pending.</p>
+        <p>{assessment.possible_item_name}</p>
     
-        <h3>Materials, stones, and age or style</h3>
-        <p>Assessment pending.</p>
+        <h3>Possible material</h3>
+        <p>{assessment.possible_material}</p>
+  
+        <h3>Possible stones</h3>
+        <p>{assessment.possible_stones}</p>
     
-        <h3>Evidence and uncertainty</h3>
-        <p>Assessment pending.</p>
+        <h3>Possible age or style</h3>
+        <p>{assessment.age_or_style}</p>
     
-        <h3>Comparable market prices</h3>
-        <p>Sold and active listings will be labeled when available.</p>
+        <h3>Brand resemblance</h3>
+        <p>{assessment.brand_resemblance}</p>
     
+        <h3>Supporting observations</h3>
+        <ul>
+          {assessment.supporting_observations.map((item, index) => (
+            <li key={index}>{item}</li>
+          ))}
+        </ul>
+  
+        <h3>Uncertainties</h3>
+        <ul>
+          {assessment.uncertainties.map((item, index) => (
+            <li key={index}>{item}</li>
+          ))}
+        </ul>
+  
+        <h3>Suggested next checks</h3>
+        <ul>
+          {assessment.next_checks.map((item, index) => (
+            <li key={index}>{item}</li>
+          ))}
+        </ul>
+        
         <p className="note">
           Similar-item prices do not guarantee your piece will sell for the
           same amount. Actual resale depends on supply and demand, condition,
