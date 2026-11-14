@@ -1,0 +1,94 @@
+.app {
+  width: min(100% -2rem, 520px);
+  margin: 0 auto;
+  padding: 2rem 0;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.eyebrow,
+.step {
+  color: #457aa2;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+h1 {
+  color: #183c59;
+  font-family: Georgia, serif;
+}
+
+.card {
+  padding: 1.5rem;
+  background: white;
+  border: 1px solid #d6e6f1;
+  border-radius: 18px;
+  box-shadow: 0 8px 24px #244f6912;
+}
+
+.upload,
+.next-button {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.85rem;
+  border: 0;
+  border-radius: 8px;
+  background: #397fa9;
+  color: white;
+  font: inherit;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+}
+
+.upload input {
+  display: none;
+}
+
+.photo-list {
+  padding-left: 1.25rem;
+}
+
+.photo-list li {
+  margin: 0.5rem 0;
+  overflow-wrap: anywhere;
+}
+
+.photo-list button {
+  margin-left: 0.5rem;
+}
+
+.price-label {
+  display: block;
+  margin: 1.5rem 0 0.5rem;
+  font-weight: 700;
+}
+
+#price {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.75rem;
+  border: 1px solid #a9c5d7;
+  border-radius: 8px;
+  font: inherit;
+}
+
+.next-button {
+  margin-top: 1.5rem;
+}
+
+.next-button:disabled {
+  background: #a9bdca;
+  cursor: default;
+}
+
+.note {
+  color: #617b8d;
+  font-size: 0.85rem;
+  text-align: center;
+}
