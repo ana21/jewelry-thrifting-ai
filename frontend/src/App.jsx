@@ -258,6 +258,50 @@ function App() {
         <p className="note">The assessment screen is coming next.</p>
       </section>
     )}
+      
+    {screen === 3 && (
+      <section className="card">
+        <p className="step">STEP 3 OF 3</p>
+        <h2>Jewelry Assessment Results</h2>
+    
+        <p>
+          Your answers are ready for assessment. Gemini will be connected
+          in the next development stage.
+        </p>
+    
+        <div className="resale-estimate">
+          <h3>Estimated resale range</h3>
+          <p>Unavailable until market evidence is researched.</p>
+          <p>Asking price: ${Number(askingPrice).toFixed(2)}</p>
+        </div>
+    
+        <h3>Possible identification</h3>
+        <p>Assessment pending.</p>
+    
+        <h3>Materials, stones, and age or style</h3>
+        <p>Assessment pending.</p>
+    
+        <h3>Evidence and uncertainty</h3>
+        <p>Assessment pending.</p>
+    
+        <h3>Comparable market prices</h3>
+        <p>Sold and active listings will be labeled when available.</p>
+    
+        <p className="note">
+          Similar-item prices do not guarantee your piece will sell for the
+          same amount. Actual resale depends on supply and demand, condition,
+          authenticity, fees, and timing.
+        </p>
+    
+        <button
+          className="back-button"
+          type="button"
+          onClick={() => setScreen(2)}
+        >
+          Edit answers
+        </button>
+      </section>
+    )}
     </main>
   )
 }
